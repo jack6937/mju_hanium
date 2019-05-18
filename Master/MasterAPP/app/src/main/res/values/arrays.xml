@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="aduino_name">
+        <item>101호</item>
+        <item>102호</item>
+    </string-array>
+</resources>
