@@ -85,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void closeDoor()
-    {
+    private void closeDoor() {
         if (btSocket!=null)
         {
             try
@@ -100,10 +99,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // fast way to call Toast
-    private void msg(String s)
-    {
+    private void msg(String s) {
         Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT).show();
     }
 
@@ -126,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
             Disconnect();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
