@@ -210,7 +210,7 @@ public class startmenu extends AppCompatActivity {
                 }
 
 
-
+                new BackgroundTask().execute();
 
 
             }
@@ -228,7 +228,7 @@ public class startmenu extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                new BackgroundTask().execute();
+                Toast.makeText(getApplicationContext(), "(임시)귀하의 OTP번호는 " + OTP + " 입니다.", Toast.LENGTH_SHORT).show();
 
 
 
@@ -382,7 +382,7 @@ public class startmenu extends AppCompatActivity {
             tv.setText("내 정보\n"+information+"\n내otp:"+OTP);
 
 
-            Toast.makeText(getApplicationContext(), "(임시)귀하의 OTP번호는 " + OTP + " 입니다.", Toast.LENGTH_SHORT).show();
+
             //tv.setText(result);
 
         }
