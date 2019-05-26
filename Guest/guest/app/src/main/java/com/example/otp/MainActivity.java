@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         inputPW = (EditText) findViewById(R.id.passwordInput);
 
         tv = (TextView) findViewById(R.id.textView2);
-
+        tv.setText("");
         BtnSignIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tv.setText("Response from PHP : " + response);
+                    tv.setText(response);
                     dialog.dismiss();
                 }
             });

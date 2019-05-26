@@ -67,10 +67,7 @@ public class registerActtivity extends AppCompatActivity {
                 task.execute("http://" + IP_ADDRESS + "/insert2.php", ID,name,password,HP/*,OTP,Auth*/);
 
 
-                mEditTextID.setText("");
-                mEditTextname.setText("");
-                mEditTextpassword.setText("");
-                mEditTextHP.setText("");
+
               //  mEditTextOTP.setText("");
           //      mEditTextAuth.setText("");
 
@@ -104,6 +101,11 @@ public class registerActtivity extends AppCompatActivity {
 
 
             if (result.contains("사용자 추가함")) {
+
+                mEditTextID.setText("");
+                mEditTextname.setText("");
+                mEditTextpassword.setText("");
+                mEditTextHP.setText("");
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 runOnUiThread(new Runnable() {
