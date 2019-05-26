@@ -26,6 +26,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.CustomViewHo
         protected TextView ID;
         protected TextView name;
         protected TextView HP;
+        protected TextView OTP;
 
 
         public CustomViewHolder(View view) {
@@ -33,9 +34,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.CustomViewHo
             this.ID = view.findViewById(R.id.textView_list_ID);
             this.name = view.findViewById(R.id.textView_list_name);
             this.HP = view.findViewById(R.id.textView_list_HP);
+            this.OTP = view.findViewById(R.id.textView_list_OTP);
         }
     }
-
 
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -51,6 +52,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.CustomViewHo
         viewholder.ID.setText(mList.get(position).getMember_ID());
         viewholder.name.setText(mList.get(position).getMember_name());
         viewholder.HP.setText(mList.get(position).getMember_HP());
+        viewholder.OTP.setText(mList.get(position).getMember_OTP());
     }
 
     @Override

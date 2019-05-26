@@ -4,6 +4,7 @@ public class PersonalData {
     private String member_ID;
     private String member_name;
     private String member_HP;
+    private String member_OTP;
 
     public String getMember_ID() {
         return member_ID;
@@ -17,6 +18,8 @@ public class PersonalData {
         return member_HP;
     }
 
+    public String getMember_OTP() { return member_OTP; }
+
     public void setMember_id(String member_ID) {
         this.member_ID = member_ID;
     }
@@ -28,4 +31,6 @@ public class PersonalData {
     public void setMember_HP(String member_HP) {
         this.member_HP = member_HP;
     }
+
+    public void setMember_OTP(String member_OTP) { this.member_OTP = member_OTP; }
 }

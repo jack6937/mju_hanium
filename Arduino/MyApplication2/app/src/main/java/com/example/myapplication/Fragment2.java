@@ -136,6 +136,7 @@ public class Fragment2 extends Fragment {
         String TAG_ID = "ID";
         String TAG_NAME = "name";
         String TAG_HP ="HP";
+        String TAG_OTP = "OTP";
 
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
@@ -148,12 +149,14 @@ public class Fragment2 extends Fragment {
                 String ID = item.getString(TAG_ID);
                 String name = item.getString(TAG_NAME);
                 String HP = item.getString(TAG_HP);
+                String OTP = item.getString(TAG_OTP);
 
                 PersonalData personalData = new PersonalData();
 
                 personalData.setMember_id(ID);
                 personalData.setMember_name(name);
                 personalData.setMember_HP(HP);
+                personalData.setMember_OTP(OTP);
 
                 mArrayList.add(personalData);
                 mAdapter.notifyDataSetChanged();
