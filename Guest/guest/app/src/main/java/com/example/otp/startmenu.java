@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,7 +48,10 @@ public class startmenu extends AppCompatActivity {
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
+
     TextView tv;
+    private String mJsonString;
+    private static String TAG = "phptest";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,39 +64,35 @@ public class startmenu extends AppCompatActivity {
         Intent intent = new Intent(getIntent());
         id = intent.getStringExtra("id");
         pass = intent.getStringExtra("pass");
+
         Toast.makeText(getApplicationContext(),"내가입력한아이디=" +id +"내가입력한비번"+pass , Toast.LENGTH_SHORT).show();
 
         tv = (TextView) findViewById(R.id.textView3);
+
         Button button = (Button) findViewById(R.id.button);
         Button button2 = (Button) findViewById(R.id.button2);
         Button button5 = (Button) findViewById(R.id.button5);
         Button button6 = (Button) findViewById(R.id.button6);
 
-        // tv.setText( "내아이디"+ id +"비번" +pass);
-        // new BackgroundTask().execute();
+        new BackgroundTask().execute();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 show();
             }
-
         });
 
         button2.setOnClickListener(new View.OnClickListener() {
 
             @Override
-
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "자물쇠가 닫혔습니다", Toast.LENGTH_SHORT).show();
             }
-
         });
 
         button5.setOnClickListener(new View.OnClickListener() {
-
             @Override
-
             public void onClick(View v) {
                 try {
                     httpclient = new DefaultHttpClient();
@@ -103,28 +106,21 @@ public class startmenu extends AppCompatActivity {
                     final String response = httpclient.execute(httppost, responseHandler);
                     System.out.println("Response : " + response);
 
+                    new BackgroundTask().execute();
                     Toast.makeText(getApplicationContext(), "새 otp가 발급되었습니다", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     dialog.dismiss();
                     System.out.println("Exception : " + e.getMessage());
                 }
-                new BackgroundTask().execute();
             }
-
-
-
-
 
         });
 
         button6.setOnClickListener(new View.OnClickListener() {
-
             @Override
-
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "(임시)귀하의 OTP번호는 " + OTP + " 입니다.", Toast.LENGTH_SHORT).show();
             }
-
         });
     }
 
@@ -150,6 +146,7 @@ public class startmenu extends AppCompatActivity {
 
                 //웹페이지 출력물을 버퍼로 받음 버퍼로 하면 속도가 더 빨라짐
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
                 String temp;
 
                 //문자열 처리를 더 빠르게 하기 위해 StringBuilder클래스를 사용함
@@ -164,17 +161,18 @@ public class startmenu extends AppCompatActivity {
                 bufferedReader.close();
                 inputStream.close();
                 httpURLConnection.disconnect();
+
                 String s= stringBuilder.toString().trim();
                 //  tv.setText(s);
                 return s;
                 //return stringBuilder.toString().trim();
                 // return stringBuilder.toString().trim();//trim은 앞뒤의 공백을 제거함
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
+
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
@@ -182,15 +180,35 @@ public class startmenu extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            int  s=result.indexOf("ID\": "+"\""+id);
-            String information = result.substring(s, s+100);
-            int ss = information.indexOf("OTP");
-            OTP=information.substring(ss+7,ss+11);
-            tv.setText("내 정보\n"+information+"\n내otp:"+OTP);
-            //tv.setText(result);
+            super.onPostExecute(result);
+            if(result == null){
+
+            }else{
+                mJsonString = result;
+                showResult();
+            }
         }
     }
+    private void showResult(){
+        String TAG_JSON = "Client";
+        String TAG_ID = "ID";
+        String TAG_OTP = "OTP";
+        try{
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
 
+            String temp = "";
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject item = jsonArray.getJSONObject(i);
+                temp = item.getString(TAG_ID);
+                if(temp.equals(id)){
+                    OTP = item.getString(TAG_OTP);
+                }
+            }
+        }catch(JSONException e){
+            Log.d(TAG, "showResult : ", e);
+        }
+    }
     void show(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("OTP");
@@ -200,20 +218,19 @@ public class startmenu extends AppCompatActivity {
         alert.setView(name);
 
         //원래 이게 취소버튼인데 취소버튼ㅇ이 왼쪽으로 오는 것 때문에
+
         //이걸 확인 버튼으로 쓸 예정!!!
 
         alert.setNegativeButton("확인",new DialogInterface.OnClickListener() {
-
             public void onClick(DialogInterface dialog, int whichButton) {
+
                 String username = name.getText().toString();
                 //String stringOTP = Integer.toString(OTP);
-
                 if (username.equals(OTP))
                     Toast.makeText(getApplicationContext(),"자물쇠가 열였습니다", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getApplicationContext(),"OTP 번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
             }
-
         });
 
         alert.setPositiveButton("취소", new DialogInterface.OnClickListener() {
