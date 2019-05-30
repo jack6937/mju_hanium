@@ -17,6 +17,7 @@ import static com.example.myapplication.MainActivity.btSocket;
 public class Fragment1  extends Fragment {
     Button openBtn;
     Button closeBtn;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class Fragment1  extends Fragment {
     private void msg(String s) {
         Toast.makeText(getContext() ,s,Toast.LENGTH_SHORT).show();
     }
-    private void openDoor(){
+    public void openDoor(){
         if(btSocket!=null){
             try{
                 btSocket.getOutputStream().write("1".getBytes());
@@ -53,7 +54,7 @@ public class Fragment1  extends Fragment {
             }
         }
     }
-    private void closeDoor(){
+    public void closeDoor(){
         if(btSocket != null){
             try{
                 btSocket.getOutputStream().write("0".getBytes());
@@ -63,4 +64,5 @@ public class Fragment1  extends Fragment {
             }
         }
     }
+
 }

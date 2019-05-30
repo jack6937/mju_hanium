@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +24,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static com.example.myapplication.MainActivity.mRecyclerView;
+import static com.example.myapplication.MainActivity.mArrayList;
+import static com.example.myapplication.MainActivity.mAdapter;
+import static com.example.myapplication.MainActivity.mJsonString;
+
 public class Fragment2 extends Fragment {
     private static String IP_ADDRESS = "ubuntu@13.125.102.51";
     private static String TAG = "phptest";
 
-    private ArrayList<PersonalData> mArrayList;
-    private UsersAdapter mAdapter;
-    private RecyclerView mRecyclerView;
-    private String mJsonString;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,7 +54,6 @@ public class Fragment2 extends Fragment {
         return view;
     }
     private class GetData extends AsyncTask<String, Void, String> {
-
         ProgressDialog progressDialog;
         String errorString = null;
 
@@ -79,7 +78,6 @@ public class Fragment2 extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-
             String serverURL = params[0];
             String postParameters = params[1];
 

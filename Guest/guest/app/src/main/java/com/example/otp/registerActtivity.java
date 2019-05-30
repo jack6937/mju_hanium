@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
 public class registerActtivity extends AppCompatActivity {
 
     private static String IP_ADDRESS = "ubuntu@13.125.102.51";
@@ -29,9 +28,7 @@ public class registerActtivity extends AppCompatActivity {
     private EditText mEditTextID;
     private EditText mEditTextname;
     private EditText mEditTextpassword;
-   private EditText mEditTextHP;
-   // private EditText mEditTextOTP;
-  //  private EditText mEditTextAuth;
+    private EditText mEditTextHP;
     private TextView mTextViewResult;
 
 
@@ -44,8 +41,6 @@ public class registerActtivity extends AppCompatActivity {
         mEditTextname = (EditText)findViewById(R.id.editText_main_name);
         mEditTextpassword = (EditText)findViewById(R.id.editText_main_password);
         mEditTextHP = (EditText)findViewById(R.id.editText_main_HP);
-     //   mEditTextOTP = (EditText)findViewById(R.id.editText_main_OTP);
-      //  mEditTextAuth = (EditText)findViewById(R.id.editText_main_Auth);
         mTextViewResult = (TextView)findViewById(R.id.textView_main_result);
 
         mTextViewResult.setMovementMethod(new ScrollingMovementMethod());
@@ -60,24 +55,14 @@ public class registerActtivity extends AppCompatActivity {
                 String name = mEditTextname.getText().toString();
                 String password = mEditTextpassword.getText().toString();
                 String HP = mEditTextHP.getText().toString();
-             //   String OTP = mEditTextOTP.getText().toString();
-             //   String Auth = mEditTextAuth.getText().toString();
 
                 InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/insert2.php", ID,name,password,HP/*,OTP,Auth*/);
-
-
-
-              //  mEditTextOTP.setText("");
-          //      mEditTextAuth.setText("");
-
+                task.execute("http://" + IP_ADDRESS + "/register.php", ID,name,password,HP/*,OTP,Auth*/);
 
             }
         });
 
     }
-
-
 
     class InsertData extends AsyncTask<String, Void, String>{
         ProgressDialog progressDialog;
@@ -89,7 +74,6 @@ public class registerActtivity extends AppCompatActivity {
             progressDialog = ProgressDialog.show(registerActtivity.this,
                     "Please Wait", null, true, true);
         }
-
 
         @Override
         protected void onPostExecute(String result) {
@@ -124,8 +108,6 @@ public class registerActtivity extends AppCompatActivity {
             String name = (String)params[2];
             String password = (String)params[3];
             String HP = (String)params[4];
-          //  String OTP = (String)params[5];
-         //   String Auth = (String)params[6];
 
             String serverURL = (String)params[0];
             String postParameters = "ID=" + ID + "&name=" + name+"&password=" + password + "&HP=" + HP/*+"&OTP=" + OTP + "&Auth=" + Auth*/;

@@ -6,15 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -30,7 +29,10 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +41,14 @@ public class startmenu extends AppCompatActivity {
     static String OTP="";
     static String id="";
     static String pass="";
-    ViewFlipper Vf;
-    Button BtnSignIn, BtnSignUp;
-    EditText inputID, inputPW;
+    private Handler mHandler;
     HttpPost httppost;
-    StringBuffer buffer;
     HttpResponse response;
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
 
-    TextView tv;
+    private String msg;
     private String mJsonString;
     private static String TAG = "phptest";
 
@@ -64,10 +63,6 @@ public class startmenu extends AppCompatActivity {
         Intent intent = new Intent(getIntent());
         id = intent.getStringExtra("id");
         pass = intent.getStringExtra("pass");
-
-        //    Toast.makeText(getApplicationContext(),"내가입력한아이디=" +id +"내가입력한비번"+pass , Toast.LENGTH_SHORT).show();
-
-        // tv = (TextView) findViewById(R.id.textView3);
 
         Button button = (Button) findViewById(R.id.button);
         Button button2 = (Button) findViewById(R.id.button2);
@@ -107,6 +102,7 @@ public class startmenu extends AppCompatActivity {
                     System.out.println("Response : " + response);
 
                     new BackgroundTask().execute();
+                    Log.d("MainActivity", "OTP 요청");
                     Toast.makeText(getApplicationContext(), "새 otp가 발급되었습니다", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     dialog.dismiss();
@@ -217,19 +213,18 @@ public class startmenu extends AppCompatActivity {
         final EditText name = new EditText(this);
         alert.setView(name);
 
-        //원래 이게 취소버튼인데 취소버튼ㅇ이 왼쪽으로 오는 것 때문에
-
-        //이걸 확인 버튼으로 쓸 예정!!!
+        mHandler = new Handler();
 
         alert.setNegativeButton("확인",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                final String username = name.getText().toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        send(username);
+                    }
+                }).start();
 
-                String username = name.getText().toString();
-                //String stringOTP = Integer.toString(OTP);
-                if (username.equals(OTP))
-                    Toast.makeText(getApplicationContext(),"자물쇠가 열였습니다", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(),"OTP 번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -239,4 +234,40 @@ public class startmenu extends AppCompatActivity {
         });
         alert.show();
     }
+
+    public void printClientLog(final String data){
+        Log.d("MainActivity", data);
+    }
+
+    public void send(String data){ // data는 OTP 번호 일거임
+        try{
+            int portNumber = 5001;
+            Socket sock = new Socket("172.20.10.4", portNumber);
+            printClientLog("소켓 연결함");
+
+            ObjectOutputStream outstream = new ObjectOutputStream(sock.getOutputStream());
+            data = data.concat("|" + id);
+            outstream.writeObject(data);
+            outstream.flush();
+            printClientLog("데이터 전송함. ");
+
+            ObjectInputStream instream = new ObjectInputStream(sock.getInputStream());
+            msg = instream.readObject().toString();
+            Log.d("MainActivity", "msg : " + msg);
+            mHandler.post(showUpdate);
+            printClientLog("서버로부터 받음: " + instream.readObject());
+
+            sock.close();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    private Runnable showUpdate = new Runnable() {
+        @Override
+        public void run() {
+            Toast.makeText(startmenu.this, msg, Toast.LENGTH_LONG).show();
+        }
+    };
+
 }

@@ -1,5 +1,3 @@
-//깃허브수정되나a
-
 package com.example.otp;
 
 import android.app.ProgressDialog;
@@ -11,9 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -29,17 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    ViewFlipper Vf;
     Button BtnSignIn, BtnSignUp;
     EditText inputID, inputPW;
     HttpPost httppost;
-    StringBuffer buffer;
     HttpResponse response;
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
-    TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         inputID = (EditText) findViewById(R.id.emailInput);
         inputPW = (EditText) findViewById(R.id.passwordInput);
 
-        tv = (TextView) findViewById(R.id.textView2);
-        tv.setText("");
         BtnSignIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     void login() {
@@ -93,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tv.setText(response);
                     dialog.dismiss();
                 }
             });
@@ -107,14 +95,11 @@ public class MainActivity extends AppCompatActivity {
                 });
                 Intent intent = new Intent(getApplicationContext(), startmenu.class);
 
-
                 String id = inputID.getText().toString();
                 String pass = inputPW.getText().toString();
                 intent.putExtra("id", id);
                 intent.putExtra("pass", pass);
                 startActivity(intent);
-
-                // startActivity((new Intent(MainActivity.this, startmenu.class)));
                 finish();
             } else {                                          // 그게 아니면 실패
                 Toast.makeText(MainActivity.this, "Login Fail", Toast.LENGTH_SHORT).show();
