@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -52,6 +53,7 @@ public class startmenu extends AppCompatActivity {
     private String mJsonString;
     private static String TAG = "phptest";
 
+    ImageView imageview1 = null, imageview2 = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +71,13 @@ public class startmenu extends AppCompatActivity {
         Button button5 = (Button) findViewById(R.id.button5);
         Button button6 = (Button) findViewById(R.id.button6);
 
+        imageview1 = (ImageView)findViewById(R.id.imageView);
+        imageview2= (ImageView)findViewById(R.id.imageView2);
+        imageview1.setImageResource(R.drawable.lockimage);
+        imageview2.setImageResource(R.drawable.unlockiamge);
+
+        imageview1.setVisibility(View.VISIBLE);
+        imageview2.setVisibility(View.INVISIBLE);
         new BackgroundTask().execute();
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +91,9 @@ public class startmenu extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
+                imageview1.setVisibility(View.VISIBLE);
+                imageview2.setVisibility(View.INVISIBLE);
                 Toast.makeText(getApplicationContext(), "자물쇠가 닫혔습니다", Toast.LENGTH_SHORT).show();
             }
         });
@@ -217,6 +229,7 @@ public class startmenu extends AppCompatActivity {
 
         alert.setNegativeButton("확인",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+
                 final String username = name.getText().toString();
                 new Thread(new Runnable() {
                     @Override
@@ -267,6 +280,13 @@ public class startmenu extends AppCompatActivity {
         @Override
         public void run() {
             Toast.makeText(startmenu.this, msg, Toast.LENGTH_LONG).show();
+
+            //otp 맞게 입력하면
+            //자물쇠가 열였다 메세지와 함께 아래코드로 로고 이미지 변환
+            /*
+                   imageview1.setVisibility(View.INVISIBLE);
+                    imageview2.setVisibility(View.VISIBLE);
+             */
         }
     };
 

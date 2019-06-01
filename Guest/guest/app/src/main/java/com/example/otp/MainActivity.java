@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -27,6 +29,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     Button BtnSignIn, BtnSignUp;
     EditText inputID, inputPW;
+    ImageButton logo;
     HttpPost httppost;
     HttpResponse response;
     HttpClient httpclient;
@@ -45,6 +48,16 @@ public class MainActivity extends AppCompatActivity {
         BtnSignIn = (Button) findViewById(R.id.button3);
         inputID = (EditText) findViewById(R.id.emailInput);
         inputPW = (EditText) findViewById(R.id.passwordInput);
+        logo= (ImageButton) findViewById(R.id.imageButton);
+
+
+            logo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputID.setText("");
+                inputPW.setText("");
+            }
+        });
 
         BtnSignIn.setOnClickListener(new OnClickListener() {
             @Override
