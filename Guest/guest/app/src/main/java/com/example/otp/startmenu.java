@@ -2,15 +2,21 @@ package com.example.otp;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -71,6 +77,8 @@ public class startmenu extends AppCompatActivity {
         Button button5 = (Button) findViewById(R.id.button5);
         Button button6 = (Button) findViewById(R.id.button6);
 
+        mHandler = new Handler();
+
         imageview1 = (ImageView)findViewById(R.id.imageView);
         imageview2= (ImageView)findViewById(R.id.imageView2);
         imageview1.setImageResource(R.drawable.lockimage);
@@ -88,13 +96,14 @@ public class startmenu extends AppCompatActivity {
         });
 
         button2.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-
-                imageview1.setVisibility(View.VISIBLE);
-                imageview2.setVisibility(View.INVISIBLE);
-                Toast.makeText(getApplicationContext(), "자물쇠가 닫혔습니다", Toast.LENGTH_SHORT).show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeDoor();
+                    }
+                }).start();
             }
         });
 
@@ -171,10 +180,7 @@ public class startmenu extends AppCompatActivity {
                 httpURLConnection.disconnect();
 
                 String s= stringBuilder.toString().trim();
-                //  tv.setText(s);
                 return s;
-                //return stringBuilder.toString().trim();
-                // return stringBuilder.toString().trim();//trim은 앞뒤의 공백을 제거함
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -225,11 +231,10 @@ public class startmenu extends AppCompatActivity {
         final EditText name = new EditText(this);
         alert.setView(name);
 
-        mHandler = new Handler();
+
 
         alert.setNegativeButton("확인",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-
                 final String username = name.getText().toString();
                 new Thread(new Runnable() {
                     @Override
@@ -245,6 +250,20 @@ public class startmenu extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
             }
         });
+        name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                name.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager = (InputMethodManager) startmenu.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
+                        name.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    }
+                });
+            }
+        });
+        name.requestFocus();
         alert.show();
     }
 
@@ -276,17 +295,54 @@ public class startmenu extends AppCompatActivity {
         }
     }
 
+    public void closeDoor(){
+        try{
+            int portNumber = 5001;
+            Socket sock = new Socket("172.20.10.4", portNumber);
+            printClientLog("소켓 연결함");
+
+            ObjectOutputStream oustream = new ObjectOutputStream(sock.getOutputStream());
+            oustream.writeObject("문을 닫아주세요");
+            oustream.flush();
+            printClientLog("데이터 전송함. ");
+
+            ObjectInputStream instream = new ObjectInputStream(sock.getInputStream());
+            msg = instream.readObject().toString();
+            mHandler.post(showUpdate);
+            Log.d("MainActivity", "msg : " + msg);
+            printClientLog("서버로부터 받음: " + instream.readObject());
+
+            sock.close();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Log.d("startmenu", "back 키가 눌렸습니다");
+            Toast.makeText(startmenu.this, "로그아웃 되었습니다", Toast.LENGTH_LONG).show();
+            finish();
+            return true;
+        }
+        return false;
+    }
+
     private Runnable showUpdate = new Runnable() {
         @Override
         public void run() {
+            if(msg.equals("문이 열렸습니다")){
+                imageview1.setVisibility(View.INVISIBLE);
+                imageview2.setVisibility(View.VISIBLE);
+            }
+            else if(msg.equals("문이 닫혔습니다")){
+                imageview1.setVisibility(View.VISIBLE);
+                imageview2.setVisibility(View.INVISIBLE);
+            }
             Toast.makeText(startmenu.this, msg, Toast.LENGTH_LONG).show();
-
             //otp 맞게 입력하면
             //자물쇠가 열였다 메세지와 함께 아래코드로 로고 이미지 변환
-            /*
-                   imageview1.setVisibility(View.INVISIBLE);
-                    imageview2.setVisibility(View.VISIBLE);
-             */
         }
     };
 

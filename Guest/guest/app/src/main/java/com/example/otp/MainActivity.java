@@ -113,9 +113,25 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("id", id);
                 intent.putExtra("pass", pass);
                 startActivity(intent);
-                finish();
-            } else {                                          // 그게 아니면 실패
-                Toast.makeText(MainActivity.this, "Login Fail", Toast.LENGTH_SHORT).show();
+                inputID.setText("");
+                inputPW.setText("");
+            }
+            else if(response.contains("Password is invalid")){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Password is invalid", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            else {
+                // 그게 아니면 실패
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "ID is invalid", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         } catch (Exception e) {
             dialog.dismiss();

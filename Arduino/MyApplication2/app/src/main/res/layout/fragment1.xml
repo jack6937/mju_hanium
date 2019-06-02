@@ -38,6 +38,7 @@
             android:layout_weight="1"
             android:background="@drawable/open"
             android:text="Open"
+            android:textStyle="bold"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -50,6 +51,7 @@
             android:layout_weight="1"
             android:background="@drawable/close"
             android:text="Close"
+            android:textStyle="bold"
             android:textColor="#ffffff"
             android:textSize="20sp" />
     </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.otp;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,8 +31,8 @@ public class registerActtivity extends AppCompatActivity {
     private EditText mEditTextname;
     private EditText mEditTextpassword;
     private EditText mEditTextHP;
-    private TextView mTextViewResult;
 
+    private String msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +40,13 @@ public class registerActtivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_acttivity);
 
         mEditTextID = (EditText)findViewById(R.id.editText_main_ID);
+        mEditTextID.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.SHOW_IMPLICIT);
+
         mEditTextname = (EditText)findViewById(R.id.editText_main_name);
         mEditTextpassword = (EditText)findViewById(R.id.editText_main_password);
         mEditTextHP = (EditText)findViewById(R.id.editText_main_HP);
-        mTextViewResult = (TextView)findViewById(R.id.textView_main_result);
-
-        mTextViewResult.setMovementMethod(new ScrollingMovementMethod());
-
 
         Button buttonInsert = (Button)findViewById(R.id.button_main_insert);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +63,6 @@ public class registerActtivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     class InsertData extends AsyncTask<String, Void, String>{
@@ -78,9 +79,15 @@ public class registerActtivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
             progressDialog.dismiss();
-            mTextViewResult.setText(result);
+            msg = result;
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(registerActtivity.this, msg, Toast.LENGTH_LONG).show();
+                }
+            });
             Log.d(TAG, "POST response  - " + result);
 
 
@@ -112,9 +119,7 @@ public class registerActtivity extends AppCompatActivity {
             String serverURL = (String)params[0];
             String postParameters = "ID=" + ID + "&name=" + name+"&password=" + password + "&HP=" + HP/*+"&OTP=" + OTP + "&Auth=" + Auth*/;
 
-
             try {
-
                 URL url = new URL(serverURL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 

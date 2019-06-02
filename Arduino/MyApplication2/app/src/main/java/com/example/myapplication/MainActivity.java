@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isBTConnected = false;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    Handler handler = new Handler();
-    TextView textView;
-
     String data;
     String socket_ID;
     String socket_OTP;
@@ -129,39 +126,47 @@ public class MainActivity extends AppCompatActivity {
                 ObjectInputStream instream = new ObjectInputStream(sock.getInputStream());
                 Object obj = instream.readObject();
 
+                ObjectOutputStream outstream = new ObjectOutputStream(sock.getOutputStream());
+
                 printServerLog("데이터 받음: " + obj);
 
                 data = obj.toString();
-                a1 = data.indexOf('|');
-                socket_ID = data.substring(a1 + 1);
-                socket_OTP = data.substring(0, a1);
 
-                printServerLog("a1 : " + a1 + " socket_ID : " + socket_ID + ", socket_OTP : " + socket_OTP);
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        GetData task = new GetData();
-                        task.execute( "http://" + IP_ADDRESS + "/getjson.php", "");
-                    }
-                }).start();
-
-                sleep(1000);
-
-                printServerLog("know : " + know);
-
-                if(know){
-                    ObjectOutputStream outstream = new ObjectOutputStream(sock.getOutputStream());
-                    outstream.writeObject("문이 열렸습니다");
-                    outstream.flush();
+                if(data.equals("문을 닫아주세요")){
+                    fragment1.closeDoor();
+                    sleep(1000);
+                    printServerLog("문이 닫히는 if문");
+                    outstream.writeObject("문이 닫혔습니다");
                 }
                 else{
-                    ObjectOutputStream outstream = new ObjectOutputStream(sock.getOutputStream());
-                    outstream.writeObject("OTP 번호가 틀렸습니다");
-                    outstream.flush();
+                    printServerLog("문이 열리는 else 문");
+                    a1 = data.indexOf('|');
+                    socket_ID = data.substring(a1 + 1);
+                    socket_OTP = data.substring(0, a1);
+
+                    printServerLog("a1 : " + a1 + " socket_ID : " + socket_ID + ", socket_OTP : " + socket_OTP);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GetData task = new GetData();
+                            task.execute( "http://" + IP_ADDRESS + "/getjson.php", "");
+                        }
+                    }).start();
+
+                    sleep(1000);
+
+                    printServerLog("know : " + know);
+
+                    if(know){
+                        outstream.writeObject("문이 열렸습니다");
+                    }
+                    else{
+                        outstream.writeObject("OTP 번호가 틀렸습니다");
+                    }
+                    know = false;
                 }
-                know = false;
-                printServerLog("데이터 보냄");
+                outstream.flush();
 
                 sock.close();
             }
@@ -172,13 +177,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void printServerLog(final String data){
         Log.d("MainActivity", data);
-
-//        handler.post(new Runnable(){
-//            @Override
-//            public void run() {
-//                textView.append(data + "\n");
-//            }
-//        });
     }
 
     @Override
@@ -266,8 +264,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     public class GetData extends AsyncTask<String, Void, String> {
         String errorString = null;
 
@@ -287,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
                 know = showResult();
             }
         }
-
         @Override
         protected String doInBackground(String... params) {
 

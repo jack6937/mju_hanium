@@ -22,18 +22,24 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText_main_ID" />
+        android:id="@+id/editText_main_ID"
+        android:inputType="text">
+       <requestFocus />
+    </EditText>
 
     <TextView
         android:id="@+id/textView_main_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name" />
+        android:text="name"
+        />
 
     <EditText
         android:id="@+id/editText_main_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        />
 
     <TextView
         android:id="@+id/textView_main_password"
@@ -44,7 +50,9 @@
     <EditText
         android:id="@+id/editText_main_password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        />
 
     <TextView
         android:id="@+id/textView_main_HP"
@@ -55,12 +63,9 @@
     <EditText
         android:id="@+id/editText_main_HP"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/textView_main_result"
-        android:layout_width="match_parent"
-        android:layout_height="83dp" />
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        />
 
     <Button
         android:id="@+id/button_main_insert"
