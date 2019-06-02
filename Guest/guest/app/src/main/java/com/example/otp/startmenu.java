@@ -287,7 +287,6 @@ public class startmenu extends AppCompatActivity {
             msg = instream.readObject().toString();
             Log.d("MainActivity", "msg : " + msg);
             mHandler.post(showUpdate);
-            printClientLog("서버로부터 받음: " + instream.readObject());
 
             sock.close();
         } catch(Exception ex){
@@ -310,8 +309,6 @@ public class startmenu extends AppCompatActivity {
             msg = instream.readObject().toString();
             mHandler.post(showUpdate);
             Log.d("MainActivity", "msg : " + msg);
-            printClientLog("서버로부터 받음: " + instream.readObject());
-
             sock.close();
         } catch(Exception ex){
             ex.printStackTrace();
@@ -321,7 +318,6 @@ public class startmenu extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
-            Log.d("startmenu", "back 키가 눌렸습니다");
             Toast.makeText(startmenu.this, "로그아웃 되었습니다", Toast.LENGTH_LONG).show();
             finish();
             return true;

@@ -29,6 +29,8 @@ import static com.example.myapplication.MainActivity.mArrayList;
 import static com.example.myapplication.MainActivity.mAdapter;
 import static com.example.myapplication.MainActivity.mJsonString;
 
+import static com.example.myapplication.MainActivity.data;
+
 public class Fragment2 extends Fragment {
     private static String IP_ADDRESS = "ubuntu@13.125.102.51";
     private static String TAG = "phptest";

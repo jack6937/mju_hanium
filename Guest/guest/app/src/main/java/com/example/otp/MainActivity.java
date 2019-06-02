@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         inputPW = (EditText) findViewById(R.id.passwordInput);
         logo= (ImageButton) findViewById(R.id.imageButton);
 
-
             logo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        inputID.setText("");
+                        inputPW.setText(null);
                         Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -113,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("id", id);
                 intent.putExtra("pass", pass);
                 startActivity(intent);
-                inputID.setText("");
-                inputPW.setText("");
             }
             else if(response.contains("Password is invalid")){
                 runOnUiThread(new Runnable() {
@@ -133,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
         } catch (Exception e) {
             dialog.dismiss();
             System.out.println("Exception : " + e.getMessage());

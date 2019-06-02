@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ import java.util.UUID;
 
 import static java.lang.Thread.sleep;
 
+
 public class MainActivity extends AppCompatActivity {
     Fragment1 fragment1;
     Fragment2 fragment2;
@@ -53,11 +56,12 @@ public class MainActivity extends AppCompatActivity {
     private boolean isBTConnected = false;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    String data;
+    public static String data;
     String socket_ID;
     String socket_OTP;
     int a1;
 
+    public static boolean lock; // 1이면 open 0이면 close
     public static boolean know;
 
     private static String IP_ADDRESS = "ubuntu@13.125.102.51";
@@ -67,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
     public static UsersAdapter mAdapter;
     public static RecyclerView mRecyclerView;
     public static String mJsonString;
+
+    private Handler mHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
         fragment3 = new Fragment3();
+
+        lock = false;
+        mHandler = new Handler();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment1).commit();
 
@@ -134,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(data.equals("문을 닫아주세요")){
                     fragment1.closeDoor();
-                    sleep(1000);
+                    mHandler.post(showUpdate);
+                    lock = false;
                     printServerLog("문이 닫히는 if문");
                     outstream.writeObject("문이 닫혔습니다");
                 }
@@ -154,12 +165,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).start();
 
-                    sleep(1000);
+                    sleep(1500);
 
                     printServerLog("know : " + know);
 
                     if(know){
                         outstream.writeObject("문이 열렸습니다");
+                        fragment1.openDoor();
+                        mHandler.post(openUpdate);
+                        lock = true;
                     }
                     else{
                         outstream.writeObject("OTP 번호가 틀렸습니다");
@@ -354,7 +368,6 @@ public class MainActivity extends AppCompatActivity {
                 String OTP = item.getString(TAG_OTP);
 
                 if(ID.equals(socket_ID) && OTP.equals(socket_OTP)){
-                    fragment1.openDoor();
                     return true;
                 }
             }
@@ -364,4 +377,18 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+
+    private Runnable showUpdate = new Runnable() {
+        @Override
+        public void run() {
+            Toast.makeText(getApplicationContext(), "문이 닫혔습니다", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private Runnable openUpdate = new Runnable() {
+        @Override
+        public void run() {
+            Toast.makeText(getApplicationContext(), "문이 열렸습니다", Toast.LENGTH_SHORT).show();
+        }
+    };
 }
