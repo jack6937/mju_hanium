@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -23,7 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class registerActtivity extends AppCompatActivity {
-
     private static String IP_ADDRESS = "ubuntu@13.125.102.51";
     private static String TAG = "phptest";
 
@@ -52,7 +49,6 @@ public class registerActtivity extends AppCompatActivity {
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String ID = mEditTextID.getText().toString();
                 String name = mEditTextname.getText().toString();
                 String password = mEditTextpassword.getText().toString();
@@ -60,7 +56,6 @@ public class registerActtivity extends AppCompatActivity {
 
                 InsertData task = new InsertData();
                 task.execute("http://" + IP_ADDRESS + "/register.php", ID,name,password,HP/*,OTP,Auth*/);
-
             }
         });
     }
@@ -71,7 +66,6 @@ public class registerActtivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             progressDialog = ProgressDialog.show(registerActtivity.this,
                     "Please Wait", null, true, true);
         }
@@ -92,7 +86,6 @@ public class registerActtivity extends AppCompatActivity {
 
 
             if (result.contains("사용자 추가함")) {
-
                 mEditTextID.setText("");
                 mEditTextname.setText("");
                 mEditTextpassword.setText("");
@@ -123,18 +116,15 @@ public class registerActtivity extends AppCompatActivity {
                 URL url = new URL(serverURL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-
                 httpURLConnection.setReadTimeout(5000);
                 httpURLConnection.setConnectTimeout(5000);
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.connect();
 
-
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
-
 
                 int responseStatusCode = httpURLConnection.getResponseCode();
                 Log.d(TAG, "POST response code - " + responseStatusCode);
@@ -147,7 +137,6 @@ public class registerActtivity extends AppCompatActivity {
                     inputStream = httpURLConnection.getErrorStream();
                 }
 
-
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
@@ -158,22 +147,13 @@ public class registerActtivity extends AppCompatActivity {
                     sb.append(line);
                 }
 
-
                 bufferedReader.close();
 
-
                 return sb.toString();
-
-
             } catch (Exception e) {
-
                 Log.d(TAG, "InsertData: Error ", e);
-
                 return new String("Error: " + e.getMessage());
             }
-
         }
     }
-
-
 }
