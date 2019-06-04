@@ -271,7 +271,7 @@ public class startmenu extends AppCompatActivity {
         Log.d("MainActivity", data);
     }
 
-    public void send(String data){ // data는 OTP 번호 일거임
+    public void send(String data){ // Geust에서 OTP번호를 입력하여 Socket을 통해 문을 연다
         try{
             int portNumber = 5001;
             Socket sock = new Socket("172.20.10.4", portNumber);

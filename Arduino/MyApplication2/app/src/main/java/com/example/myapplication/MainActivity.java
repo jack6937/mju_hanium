@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).start();
 
-                    sleep(1500);
+                    sleep(1000);
 
                     printServerLog("know : " + know);
 
