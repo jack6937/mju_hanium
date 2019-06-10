@@ -27,12 +27,17 @@
 
 	 $error= 'login success';
 
-		echo "login success";
+		//echo "login success";
 //         header("location: welcome.php");
       }else {
+	$sqlID = "SELECT * FROM Client WHERE ID='$id'";
+	$resultID = mysqli_query($conn,$sqlID);
+	$countID = mysqli_num_rows($resultID);
+	if($countID == 1) $error = 'Password is invalid';
+	else $error = 'ID is invalid';
 
-         $error = "Your Login Name or Password is invalid";
-	echo "login fail";
+       // $error = "Your Login Name or Password is invalid";
+	//echo "login fail";
       }
    }
 ?>
